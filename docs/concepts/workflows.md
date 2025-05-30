@@ -1,6 +1,6 @@
 # Workflows
 
-Workflows in the Agentic Framework allow you to define and execute sequences of tasks, with support for dependencies, error handling, and parallel execution.
+Workflows in the Xeo framework allow you to define and execute sequences of tasks, with support for dependencies, error handling, and parallel execution.
 
 ## Key Concepts
 
@@ -19,7 +19,7 @@ A collection of tasks with defined dependencies that can be executed as a single
 ### 1. Define Tasks
 
 ```python
-from agentic_framework import TaskDefinition
+from xeo import TaskDefinition
 
 # Simple task with no dependencies
 task1 = TaskDefinition(
@@ -39,7 +39,7 @@ task2 = TaskDefinition(
 ### 2. Create and Run a Workflow
 
 ```python
-from agentic_framework import Workflow
+from xeo import Workflow
 
 # Create workflow
 workflow = Workflow("data_processing")
@@ -120,7 +120,7 @@ workflow.on_failure(lambda error: print(f"Workflow failed: {error}"))
 ## Example: Data Processing Pipeline
 
 ```python
-from agentic_framework import Workflow, TaskDefinition
+from xeo import Workflow, TaskDefinition
 
 async def extract():
     print("Extracting data...")

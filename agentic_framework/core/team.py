@@ -1,5 +1,5 @@
 """
-Team module for the Agentic Framework.
+Team module for the Xeo Framework.
 
 This module defines the Team class and related components for managing
 groups of agents and their interactions.

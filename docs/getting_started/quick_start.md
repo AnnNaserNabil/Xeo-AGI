@@ -1,13 +1,13 @@
 # Quick Start Guide
 
-This guide will help you quickly get started with the Agentic Framework by walking you through creating and running a simple agent.
+This guide will help you quickly get started with the Xeo framework by walking you through creating and running a simple agent.
 
 ## Installation
 
 First, install the framework using pip:
 
 ```bash
-pip install agentic-framework
+pip install xeo
 ```
 
 ## Your First Agent
@@ -15,7 +15,7 @@ pip install agentic-framework
 Let's create a simple agent that can respond to greetings:
 
 ```python
-from agentic_framework import Agent, AgentType
+from xeo import Agent, AgentType
 
 class GreetingAgent(Agent):
     def __init__(self, name):
@@ -39,7 +39,7 @@ print(response)  # Output: Hello! I'm Greeter. How can I assist you today?
 Let's create a simple workflow with two agents:
 
 ```python
-from agentic_framework import Workflow, TaskDefinition
+from xeo import Workflow, TaskDefinition
 
 # Create agents
 greeter = GreetingAgent("Greeter")

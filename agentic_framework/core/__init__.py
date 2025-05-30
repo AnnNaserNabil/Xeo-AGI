@@ -1,5 +1,5 @@
 """
-Core module for the Agentic Framework.
+Core module for the Xeo Framework.
 
 This module contains the fundamental building blocks for creating and managing
 agents, teams, and their interactions within the framework.
@@ -23,6 +23,6 @@ __all__ = [
     'Tool', 'ToolRegistry',
     'InferenceEngine', 'Planner',
     'Memory', 'ShortTermMemory', 'LongTermMemory',
-    'KnowledgeGraph', 'KnowledgeManager',
+    'KnowledgeItem', 'KnowledgeType', 'InMemoryKnowledgeBase', 'KnowledgeManager',
     'Workflow', 'Task', 'WorkflowEngine'
 ]

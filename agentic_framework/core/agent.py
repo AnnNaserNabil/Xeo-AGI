@@ -1,5 +1,5 @@
 """
-Agent module for the Agentic Framework.
+Agent module for the Xeo Framework.
 
 This module defines the base Agent class and related components for creating
 and managing autonomous agents.

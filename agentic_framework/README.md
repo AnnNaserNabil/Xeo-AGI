@@ -1,4 +1,4 @@
-# Agentic Framework
+# Xeo
 
 A modular, scalable, and maintainable framework for building autonomous agent systems.
 
@@ -6,6 +6,7 @@ A modular, scalable, and maintainable framework for building autonomous agent sy
 
 - **Agents**: Create and manage autonomous agents with different capabilities
 - **Teams**: Form teams of agents with role-based collaboration
+- **LLM Integration**: First-class support for large language models (Gemini, etc.)
 - **Models**: Integrate various AI/ML models (LLMs, embeddings, etc.)
 - **Tools**: Extend agent capabilities with custom tools
 - **Memory**: Short-term and long-term memory systems
@@ -18,8 +19,8 @@ A modular, scalable, and maintainable framework for building autonomous agent sy
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/agentic-framework.git
-   cd agentic-framework
+   git clone https://github.com/yourusername/xeo.git
+   cd xeo
    ```
 
 2. Create and activate a virtual environment (recommended):
@@ -35,9 +36,11 @@ A modular, scalable, and maintainable framework for building autonomous agent sy
 
 ## Quick Start
 
+### Basic Agent Example
+
 ```python
-from agentic_framework.core.agent import Agent, AgentConfig, AgentType
-from agentic_framework.core.team import Team, TeamRole
+from xeo.core.agent import Agent, AgentConfig, AgentType
+from xeo.core.team import Team, TeamRole
 
 # Create an agent config
 config = AgentConfig(
@@ -48,6 +51,31 @@ config = AgentConfig(
 
 # Create an agent
 agent = Agent(config)
+```
+
+### LLM Integration Example
+
+```python
+import asyncio
+from xeo.llm import create_llm, LLMType
+
+async def main():
+    # Initialize the Gemini LLM
+    gemini = create_llm(
+        llm_type=LLMType.GEMINI,
+        model_name="gemini-pro",
+        api_key="your-google-api-key"  # Or use environment variable GOOGLE_API_KEY
+    )
+    
+    # Generate text
+    response = await gemini.generate("Tell me a joke about programming.")
+    print(response)
+
+if __name__ == "__main__":
+    asyncio.run(main())
+```
+
+For more details, see the [LLM Integration Guide](./docs/llm_integration.md).
 
 
 # Create a team and add the agent
@@ -67,7 +95,7 @@ asyncio.run(main())
 ## Project Structure
 
 ```
-agentic_framework/
+xeo/
 ├── core/                    # Core framework components
 │   ├── __init__.py
 │   ├── agent.py             # Base Agent class
@@ -112,4 +140,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgments
 
 - Inspired by various open-source agent frameworks
-- Built with ❤️ by the Agentic Framework team
+- Built with ❤️ by the Xeo team

@@ -1,5 +1,5 @@
 """
-Models module for the Agentic Framework.
+Models module for the Xeo Framework.
 
 This module defines the base Model class and ModelRegistry for managing
 various AI/ML models used by agents.

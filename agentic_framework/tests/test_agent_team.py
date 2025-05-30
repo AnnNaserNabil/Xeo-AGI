@@ -2,8 +2,8 @@
 Test script for the Agent and Team classes.
 """
 import asyncio
-from agentic_framework.core.agent import Agent, AgentConfig, AgentType, AutonomousAgent
-from agentic_framework.core.team import Team, TeamRole
+from xeo.core.agent import Agent, AgentConfig, AgentType, AutonomousAgent
+from xeo.core.team import Team, TeamRole
 
 
 async def test_autonomous_agent():

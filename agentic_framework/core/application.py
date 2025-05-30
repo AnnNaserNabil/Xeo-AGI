@@ -1,5 +1,5 @@
 """
-Application module for the Agentic Framework.
+Application module for the Xeo Framework.
 
 This module defines the Application class for managing agent applications.
 """

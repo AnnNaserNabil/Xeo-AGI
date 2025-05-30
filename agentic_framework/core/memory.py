@@ -1,5 +1,5 @@
 """
-Memory module for the Agentic Framework.
+Memory module for the Xeo Framework.
 
 This module defines the memory systems used by agents to store and retrieve
 information over short and long time periods.

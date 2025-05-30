@@ -1,5 +1,5 @@
 """
-Workflows module for the Agentic Framework.
+Workflows module for the Xeo Framework.
 
 This module defines the Workflow and related classes for managing
 sequences of tasks performed by agents.

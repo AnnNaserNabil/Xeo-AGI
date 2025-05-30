@@ -1,5 +1,5 @@
 """
-Tools module for the Agentic Framework.
+Tools module for the Xeo Framework.
 
 This module defines the base Tool class and ToolRegistry for managing
 tools that agents can use to interact with the environment or perform tasks.

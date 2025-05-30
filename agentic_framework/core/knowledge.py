@@ -1,5 +1,5 @@
 """
-Knowledge module for the Agentic Framework.
+Knowledge module for the Xeo Framework.
 
 This module defines the knowledge management system used by agents to
 store, retrieve, and reason about information.

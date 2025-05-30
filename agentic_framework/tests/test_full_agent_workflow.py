@@ -6,11 +6,11 @@ import json
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
-from agentic_framework.core.agent import Agent, AgentConfig, AgentType, AutonomousAgent, AgentState
-from agentic_framework.core.team import Team, TeamRole, CommunicationProtocol
-from agentic_framework.core.memory import ShortTermMemory, LongTermMemory, MemoryItem
-from agentic_framework.core.knowledge import KnowledgeItem, KnowledgeType, InMemoryKnowledgeBase, KnowledgeManager
-from agentic_framework.core.workflows import Workflow, TaskDefinition, TaskStatus, WorkflowEngine
+from xeo.core.agent import Agent, AgentConfig, AgentType, AutonomousAgent, AgentState
+from xeo.core.team import Team, TeamRole, CommunicationProtocol
+from xeo.core.memory import ShortTermMemory, LongTermMemory, MemoryItem
+from xeo.core.knowledge import KnowledgeItem, KnowledgeType, InMemoryKnowledgeBase, KnowledgeManager
+from xeo.core.workflows import Workflow, TaskDefinition, TaskStatus, WorkflowEngine
 
 
 class ResearchAgent(AutonomousAgent):

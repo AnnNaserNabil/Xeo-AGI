@@ -1,6 +1,6 @@
-# Single Agent Example
+# Single Agent Use Case
 
-This example demonstrates how to create and use a single agent with basic capabilities.
+This guide demonstrates how to create and use a single autonomous agent with the Xeo framework capabilities.
 
 ## Overview
 
@@ -14,7 +14,7 @@ We'll create a `ResearchAgent` that can:
 ```python
 from dataclasses import dataclass
 from typing import Dict, List, Optional
-from agentic_framework import Agent, AgentType, AgentState
+from xeo import Agent, AgentType, AgentState
 
 @dataclass
 class ResearchFinding:

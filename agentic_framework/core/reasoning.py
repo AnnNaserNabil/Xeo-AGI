@@ -1,5 +1,5 @@
 """
-Reasoning module for the Agentic Framework.
+Reasoning module for the Xeo Framework.
 
 This module provides components for agent reasoning, including inference engines
 and planning capabilities.

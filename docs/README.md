@@ -1,6 +1,6 @@
-# Agentic Framework Documentation
+# Xeo Documentation
 
-Welcome to the Agentic Framework documentation! This directory contains comprehensive guides and examples to help you understand and utilize the framework's features effectively.
+Welcome to the Xeo documentation! This directory contains comprehensive guides and examples to help you understand and utilize the framework's features effectively.
 
 ## Getting Started
 
