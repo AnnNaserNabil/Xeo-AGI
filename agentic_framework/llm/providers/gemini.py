@@ -145,7 +145,7 @@ class GeminiLLM(BaseLLM):
         Initialize the Gemini LLM.
         
         Args:
-            model_name: Name of the Gemini model to use (e.g., 'gemini-pro')
+            model_name: Name of the Gemini model to use (e.g., 'gemini-1.5-pro', 'gemini-2.0-flash')
             **kwargs: Additional arguments:
                 - api_key: Google AI API key (can also be set via GOOGLE_API_KEY env var)
                 - generation_config: Optional GenerationConfig for the model
@@ -164,7 +164,43 @@ class GeminiLLM(BaseLLM):
         genai.configure(api_key=api_key)
         self.generation_config = kwargs.get('generation_config')
         self.safety_settings = kwargs.get('safety_settings')
-        self._model = genai.GenerativeModel(model_name)
+        
+        # Initialize the model with appropriate settings
+        self._model = genai.GenerativeModel(
+            model_name=model_name,
+            generation_config=self.generation_config or self._get_default_generation_config(),
+            safety_settings=self.safety_settings or self._get_default_safety_settings()
+        )
+        
+    def _get_default_generation_config(self) -> dict:
+        """Get default generation config for the model."""
+        return {
+            'temperature': 0.7,
+            'top_p': 0.9,
+            'top_k': 40,
+            'max_output_tokens': 2048,
+        }
+        
+    def _get_default_safety_settings(self) -> list:
+        """Get default safety settings for the model."""
+        return [
+            {
+                "category": "HARM_CATEGORY_HARASSMENT",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_HATE_SPEECH",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+                "threshold": "BLOCK_NONE"
+            },
+            {
+                "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+                "threshold": "BLOCK_NONE"
+            }
+        ]
     
     @classmethod
     def get_provider_type(cls) -> LLMType:
@@ -311,56 +347,37 @@ class GeminiLLM(BaseLLM):
         gemini_messages = _convert_to_gemini_messages(messages)
         
         # Get generation config
-        config = self._get_generation_config(**generation_kwargs)
+        gen_config = self._get_generation_config(**generation_kwargs)
         
-        # Handle function/tool definitions
-        tools = generation_kwargs.get('tools')
-        if tools:
-            # Convert tools to Gemini format
-            gemini_tools = []
-            for tool in tools:
-                if 'function' in tool:
-                    gemini_tools.append({
-                        'function_declarations': [{
-                            'name': tool['function']['name'],
-                            'description': tool['function'].get('description', ''),
-                            'parameters': tool['function'].get('parameters', {})
-                        }]
-                    })
-        else:
-            gemini_tools = None
-        
-        # Start a chat session
+        # Start chat session
         chat = self._model.start_chat(history=gemini_messages[:-1])
         
-        # Get the latest message parts
-        latest_message = gemini_messages[-1]
+        # Collect all chunks
+        response_parts = []
         
-        # Stream the response
+        # Get the async iterator for the response
         response = await chat.send_message_async(
-            latest_message['parts'],
-            generation_config=config,
-            safety_settings=self.safety_settings,
-            tools=gemini_tools,
+            gemini_messages[-1],
             stream=True,
-            **{k: v for k, v in generation_kwargs.items() 
-               if k not in ['temperature', 'max_tokens', 'max_output_tokens', 
-                          'top_p', 'top_k', 'stop_sequences', 'n',
-                          'presence_penalty', 'frequency_penalty',
-                          'functions', 'function_call', 'tools', 'tool_choice']}
+            generation_config=gen_config,
+            safety_settings=self.safety_settings
         )
         
         # Process the streaming response
-        full_response = None
         async for chunk in response:
-            if not full_response:
-                full_response = chunk
-            else:
-                # Merge chunks
-                full_response = self._merge_responses(full_response, chunk)
-            
-            # Yield the current state of the response
-            yield _parse_gemini_response(full_response)
+            if hasattr(chunk, 'text'):
+                response_parts.append(chunk.text)
+                
+                # Create a message with the current response
+                response_text = ''.join(response_parts)
+                yield Message(
+                    role=MessageRole.ASSISTANT,
+                    content=response_text
+                )
+                
+            # If this is the final chunk, we're done
+            if hasattr(chunk, 'candidates') and chunk.candidates and chunk.candidates[0].finish_reason:
+                break
     
     async def stream_generate(
         self,
@@ -401,44 +418,31 @@ class GeminiLLM(BaseLLM):
                 if message.content:
                     yield message.content
     
-    def _merge_responses(self, response1: Any, response2: Any) -> Any:
-        """Merge two response objects from the streaming API."""
-        # Create a copy of the first response
-        merged = type(response1)()
-        
-        # Copy all attributes from response1
-        for attr in dir(response1):
-            if not attr.startswith('_') and not callable(getattr(response1, attr)):
-                setattr(merged, attr, getattr(response1, attr))
-        
-        # Merge text parts
-        if hasattr(response1, 'text') and hasattr(response2, 'text'):
-            merged.text = response1.text + response2.text
-        
-        # Merge parts
-        if hasattr(response1, 'parts') and hasattr(response2, 'parts'):
-            merged.parts = response1.parts + response2.parts
-        
-        return merged
-    
-    def get_model_info(self) -> Dict[str, Any]:
+    def get_model_info(self) -> dict:
         """
         Get information about the model.
         
         Returns:
             Dictionary with model information including capabilities
         """
-        return {
-            'provider': 'google',
-            'model': self.model_name,
-            'capabilities': [
-                'chat', 
-                'completion', 
-                'streaming',
-                'function_calling',
-                'tool_use',
-                'system_messages'
-            ],
-            'max_tokens': 131072 if '1.5' in self.model_name else 8192,
-            'supports_system_messages': True,
+        model_info = {
+            "provider": "google",
+            "model": self.model_name,
+            "capabilities": ["chat", "function_calling", "streaming"],
+            "max_tokens": 1048576,  # Default for Gemini 1.5 models
+            "supports_system_messages": True,
         }
+        
+        # Update based on model version
+        if '1.5' in self.model_name:
+            model_info.update({
+                "max_tokens": 1048576,
+                "capabilities": ["chat", "function_calling", "streaming", "long_context"]
+            })
+        elif '2.0' in self.model_name:
+            model_info.update({
+                "max_tokens": 1048576 if 'flash' not in self.model_name else 128000,
+                "capabilities": ["chat", "function_calling", "streaming", "long_context"]
+            })
+            
+        return model_info
