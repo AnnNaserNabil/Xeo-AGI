@@ -1,0 +1,92 @@
+{
+  "memories": {
+    "ltm_0": {
+      "content": {
+        "task": "the impact of AI on software development",
+        "status": "completed",
+        "findings": [
+          {
+            "source": "source_1",
+            "summary": "Information about the impact of AI on software development",
+            "relevance": 0.85
+          },
+          {
+            "source": "source_2",
+            "summary": "Additional details about the impact of AI on software development",
+            "relevance": 0.72
+          }
+        ],
+        "conclusions": [
+          "Based on research, the impact of AI on software development is an important topic with several key aspects."
+        ],
+        "timestamp": "2025-05-30T22:49:20.893606"
+      },
+      "timestamp": 1748645360.8936126,
+      "metadata": {
+        "task": "the impact of AI on software development",
+        "task_id": "stm_0",
+        "type": "research_result"
+      },
+      "importance": 0.5
+    },
+    "ltm_1": {
+      "content": {
+        "task": "the impact of AI on software development",
+        "status": "completed",
+        "findings": [
+          {
+            "source": "source_1",
+            "summary": "Information about the impact of AI on software development",
+            "relevance": 0.85
+          },
+          {
+            "source": "source_2",
+            "summary": "Additional details about the impact of AI on software development",
+            "relevance": 0.72
+          }
+        ],
+        "conclusions": [
+          "Based on research, the impact of AI on software development is an important topic with several key aspects."
+        ],
+        "timestamp": "2025-05-30T22:54:47.880638"
+      },
+      "timestamp": 1748645687.8806508,
+      "metadata": {
+        "task": "the impact of AI on software development",
+        "task_id": "stm_0",
+        "type": "research_result"
+      },
+      "importance": 0.5
+    },
+    "ltm_2": {
+      "content": {
+        "task": "the impact of AI on software development",
+        "status": "completed",
+        "findings": [
+          {
+            "source": "source_1",
+            "summary": "Information about the impact of AI on software development",
+            "relevance": 0.85
+          },
+          {
+            "source": "source_2",
+            "summary": "Additional details about the impact of AI on software development",
+            "relevance": 0.72
+          }
+        ],
+        "conclusions": [
+          "Based on research, the impact of AI on software development is an important topic with several key aspects."
+        ],
+        "timestamp": "2025-05-30T22:55:21.552619"
+      },
+      "timestamp": 1748645721.5526316,
+      "metadata": {
+        "task": "the impact of AI on software development",
+        "task_id": "stm_0",
+        "type": "research_result"
+      },
+      "importance": 0.5
+    }
+  },
+  "counter": 3
+}
