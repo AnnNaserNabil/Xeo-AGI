@@ -4,15 +4,20 @@ Factory module for creating and managing LLM instances.
 This module provides a factory pattern for creating LLM instances
 with proper configuration and dependency injection.
 """
-from typing import Type, Dict, Optional, Any
-from .base import BaseLLM, LLMType, LLMError
-from ..config.providers import get_llm_config
+from typing import Type, Dict, Optional, Any, Literal
+from .base import BaseLLM, LLMError
+
+# Define LLMType as a string literal to avoid circular imports
+LLMTypeStr = Literal["gemini", "openai", "claude"]
+
+# Deferred import to avoid circular imports
+get_llm_config = None
 
 class LLMFactory:
     """Factory for creating and managing LLM instances."""
     
     _instance = None
-    _providers: Dict[LLMType, Type[BaseLLM]] = {}
+    _providers: Dict[LLMTypeStr, Type[BaseLLM]] = {}
     
     def __new__(cls):
         if cls._instance is None:
@@ -24,24 +29,41 @@ class LLMFactory:
         if self._initialized:
             return
             
-        self._config = get_llm_config()
+        self._config = None
         self._initialized = True
+        
+    @property
+    def config(self):
+        if self._config is None:
+            from ..config.providers import get_llm_config as _get_llm_config
+            self._config = _get_llm_config()
+        return self._config
     
-    def register_provider(self, provider_type: LLMType, provider_class: Type[BaseLLM]) -> None:
+    def register_provider(self, provider_type: LLMTypeStr, provider_class: Type[BaseLLM]) -> None:
         """Register a new LLM provider.
         
         Args:
-            provider_type: The type of the provider
+            provider_type: The type of the provider (one of 'gemini', 'openai', 'claude')
             provider_class: The provider class to register
             
         Raises:
-            ValueError: If the provider type is already registered
+            ValueError: If the provider type is already registered or invalid
         """
+        if provider_type not in ["gemini", "openai", "claude"]:
+            raise ValueError(f"Invalid provider type: {provider_type}")
+            
         if provider_type in self._providers:
             raise ValueError(f"Provider type '{provider_type}' is already registered")
         self._providers[provider_type] = provider_class
+        
+        # Lazy import of get_llm_config
+        global get_llm_config
+        if get_llm_config is None:
+            from ..config.providers import get_llm_config as _get_llm_config
+            get_llm_config = _get_llm_config
+            self._config = get_llm_config()
     
-    def get_provider(self, provider_name: Optional[str] = None) -> Type[BaseLLM]:
+    def get_provider(self, provider_name: Optional[LLMTypeStr] = None) -> Type[BaseLLM]:
         """Get the provider class for the specified provider.
         
         Args:
@@ -51,19 +73,18 @@ class LLMFactory:
             The provider class
             
         Raises:
-            ValueError: If the provider is not found or not enabled
+            LLMError: If the provider is not found or not enabled
         """
-        provider_name = provider_name or self._config.default_provider
-        
-        try:
-            provider_type = LLMType(provider_name)
-        except ValueError as e:
-            raise ValueError(f"Unknown provider type: {provider_name}") from e
+        if not self._providers:
+            raise LLMError("No LLM providers registered")
             
-        if provider_type not in self._providers:
-            raise ValueError(f"No provider registered for type: {provider_type}")
+        if provider_name is None:
+            provider_name = self.config.default_provider
             
-        return self._providers[provider_type]
+        if provider_name not in self._providers:
+            raise LLMError(f"No such LLM provider: {provider_name}")
+            
+        return self._providers[provider_name]
     
     def create_llm(
         self,

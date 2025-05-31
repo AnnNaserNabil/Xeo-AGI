@@ -5,7 +5,8 @@ This module provides a centralized way to manage configuration settings
 across the entire application.
 """
 from typing import Any, Dict, Optional
-from pydantic import BaseSettings, Field, validator
+from pydantic import Field, validator
+from pydantic_settings import BaseSettings
 from pathlib import Path
 
 class Settings(BaseSettings):
@@ -19,6 +20,9 @@ class Settings(BaseSettings):
     # Path settings
     BASE_DIR: Path = Path(__file__).parent.parent
     DATA_DIR: Path = BASE_DIR / "data"
+    
+    # API Keys
+    google_api_key: str = Field(..., env="GOOGLE_API_KEY")
     CACHE_DIR: Path = BASE_DIR / ".cache"
     
     # LLM settings

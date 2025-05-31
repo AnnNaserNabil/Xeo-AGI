@@ -27,8 +27,8 @@ from .llm import (
     get_llm_factory
 )
 
-# Import plugins
-from .llm.providers.plugin import register as register_gemini_plugin
+# Import plugins (don't auto-register to prevent double registration)
+# Plugins will be registered when the plugin system is initialized
 
 __version__ = "0.2.0"
 
